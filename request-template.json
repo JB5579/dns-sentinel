@@ -1,0 +1,56 @@
+{
+  "state": {
+    "timestamp": "2026-09-24T03:14:07-04:00",
+    "client": "kitchen-ipad",
+    "query": "xkjqwpzr-telemetry.com",
+    "query_type": "A",
+    "response": "NXDOMAIN",
+    "parent_domain": "xkjqwpzr-telemetry.com",
+    "blocklist_hits": [],
+    "repeat_count_24h": 41
+  },
+  "questions": {
+    "category": {
+      "type": "choice",
+      "options": ["infrastructure", "normal-usage", "telemetry", "advertising", "suspicious"],
+      "instructions": "Classify what this DNS query exists to do. Judge the domain name, the record type, the response, and any repeat pattern as a whole.",
+      "criteria": {
+        "infrastructure": "Plumbing a device needs: CDNs, OS/app update and auth endpoints, time servers (fonts.gstatic.com, api.apple-cloudkit.com, ntppool.org).",
+        "normal-usage": "Human-initiated browsing, apps, streaming, search, games (youtube.com, espn.com, roblox.com).",
+        "telemetry": "Diagnostics, crash reports, usage pingbacks from apps or OS — not serving ads (telemetry.microsoft.com, crashlytics.com, app-measurement.com).",
+        "advertising": "Ad servers, trackers, retargeting, RTB endpoints (doubleclick.net, adsrvr.org, graph.facebook.com when fetched by a tracker).",
+        "suspicious": "Signals of bad intent: random-looking high-entropy names, brand lookalikes, odd TLDs with deep subdomains, or the same unknown domain queried at beacon-like regular intervals (xkjqwpzr.com, micros0ft-support.xyz)."
+      }
+    },
+    "suspicion": {
+      "type": "score",
+      "options": ["1", "3", "5", "7", "9"],
+      "instructions": "Rate how suspicious this single query is. Consider: entropy of the name, TLD reputation, brand-lookalike spelling, subdomain depth, whether the response is NXDOMAIN with a high repeat count, and whether any blocklist already flagged it.",
+      "criteria": [
+        "1: Benign — well-known domain, ordinary record type, nothing unusual anywhere in the record.",
+        "3: Routine — uncommon but plausible: long-tail sites, app backends, regional CDNs.",
+        "5: Notable — mixed signals: unusual TLD or deep subdomains but otherwise legitimate-looking; or a blocklist hit on an otherwise normal-looking name.",
+        "7: Suspicious — strong signals: high-entropy name, brand lookalike, or repeated lookups of a name that keeps failing or is blocklisted.",
+        "9: Critical — near-certain malicious infrastructure: DGA-style name, fresh NXDOMAIN pairings with high repeat counts, or known-bad patterns."
+      ]
+    },
+    "privacy": {
+      "type": "noul",
+      "instructions": "Decide whether this query could reveal sensitive personal information about a household member if it left the local network. Answer yes for private, no for not-private.",
+      "criteria": {
+        "true": "private: The domain or its pattern could reveal health, finance, identity, relationships, or intimate interests (medical portals, banking, dating, recovery/support resources, job hunting while employed).",
+        "false": "not-private: No profiling-sensitive content is implied: shopping, sports, entertainment, OS plumbing, general browsing."
+      }
+    },
+    "recommend": {
+      "type": "choice",
+      "options": ["log-only", "flag-review", "suggest-block"],
+      "instructions": "Recommend the next action. This system NEVER enforces on its own: suggest-block only queues a human approval. Match the recommendation to your own category and suspicion answers.",
+      "criteria": {
+        "log-only": "Suspicion 1-5: record it in the decision log and move on.",
+        "flag-review": "Suspicion 7, or suspicious-category names that are plausibly legitimate: put it in the human review queue with a one-line rationale.",
+        "suggest-block": "Suspicion 9, or repeated lookups of clearly malicious or lookalike names: propose a block that waits for explicit human approval before taking effect."
+      }
+    }
+  }
+}
